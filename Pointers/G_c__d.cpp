@@ -1,0 +1,23 @@
+class Solution {
+  public:
+    int gcd(int a, int b) {
+        if (a==0) return 0;
+        if(b==0)  return 0;
+        while(a>0 && b>0)
+        {
+            if(a>b)
+            {
+                a=a-b;
+            }
+            else
+            {
+                b=b-a;
+            }
+        }
+        return (a>0)?a:b;
+        
+    }
+};
+
+//Euclids algoritham
+//LCM=a*b/Gcd

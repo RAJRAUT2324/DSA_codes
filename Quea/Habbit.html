@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Quest | Persistent Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --glass-bg: #ffffff;
+            --primary-blue: #5bc0de;
+            --sage-green: #9fb8ad;
+            --text-dark: #4a4a4a;
+            --border-color: #e0e4e8;
+            --accent-gold: #f39c12;
+            --danger-red: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 15px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card span {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card strong {
+            font-size: 1.4rem;
+            color: var(--sage-green);
+        }
+
+        /* Table Styling */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 1000px;
+        }
+
+        th {
+            background-color: #f1f3f5;
+            color: #666;
+            font-weight: 600;
+            padding: 10px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+        }
+
+        td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: center;
+        }
+
+        .habit-cell {
+            text-align: left;
+            padding-left: 15px;
+            font-weight: 500;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .habit-input {
+            border: none;
+            font-weight: 500;
+            color: var(--text-dark);
+            width: 80%;
+            outline: none;
+            background: transparent;
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--sage-green);
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Controls */
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .add-btn { background: var(--sage-green); color: white; }
+        .add-btn:hover { background: #8ba396; }
+
+        .reset-btn { background: white; color: var(--danger-red); border: 1px solid var(--danger-red); }
+        .reset-btn:hover { background: var(--danger-red); color: white; }
+
+        .save-indicator {
+            color: #888;
+            font-size: 0.9rem;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        /* Chart Section */
+        .chart-container {
+            margin-top: 40px;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <div>
+            <h2 style="margin:0; color:var(--sage-green);">🌿 Life Quest Tracker</h2>
+            <p style="margin:5px 0 0 0; color:#888; font-size:0.9rem;">Your progress is saved automatically.</p>
+        </div>
+        <div>
+            <select id="monthSelect" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <option selected>Current Month</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card"><span>Current Level</span><strong id="levelDisplay">Lv. 1</strong></div>
+        <div class="stat-card"><span>Total XP</span><strong id="xpDisplay">0</strong></div>
+        <div class="stat-card"><span>Avg. Consistency</span><strong id="avgDisplay">0%</strong></div>
+        <div class="stat-card"><span>Rank</span><strong id="rankDisplay" style="color:var(--accent-gold)">Novice</strong></div>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="habitTable">
+            <thead>
+                <tr id="headerRow">
+                    <th>Habit 📝</th>
+                </tr>
+            </thead>
+            <tbody id="habitBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="controls">
+        <div class="btn-group">
+            <button class="add-btn" onclick="addNewHabit()">+ Add New Habit</button>
+            <button class="reset-btn" onclick="hardReset()">⚠️ Reset Data</button>
+        </div>
+        <span id="saveMsg" class="save-indicator">Saved ✔</span>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="progressChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const daysInMonth = 30;
+    const STORAGE_KEY = 'lifeQuestData_v1';
+    
+    // Default data if nothing is saved
+    const defaultHabits = [
+        { name: "Early Wakeup ☀️", data: new Array(daysInMonth).fill(false) },
+        { name: "Deep Work 💻", data: new Array(daysInMonth).fill(false) },
+        { name: "Gym/Yoga 🏃‍♂️", data: new Array(daysInMonth).fill(false) }
+    ];
+
+    let habits = [];
+    let chart;
+
+    // 1. LOAD DATA ON START
+    function loadData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            habits = JSON.parse(stored);
+        } else {
+            habits = JSON.parse(JSON.stringify(defaultHabits)); // Deep copy
+        }
+        initTable();
+    }
+
+    // 2. SAVE DATA FUNCTION
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
+        showSaveMsg();
+    }
+
+    function showSaveMsg() {
+        const msg = document.getElementById('saveMsg');
+        msg.style.opacity = '1';
+        setTimeout(() => { msg.style.opacity = '0'; }, 1500);
+    }
+
+    function initTable() {
+        const headerRow = document.getElementById('headerRow');
+        // Clear existing day headers if re-initializing to avoid duplicates
+        while (headerRow.children.length > 1) {
+            headerRow.removeChild(headerRow.lastChild);
+        }
+
+        // Build Header Days
+        for (let i = 1; i <= daysInMonth; i++) {
+            const th = document.createElement('th');
+            th.textContent = i;
+            headerRow.appendChild(th);
+        }
+        const thProgress = document.createElement('th');
+        thProgress.textContent = "%";
+        headerRow.appendChild(thProgress);
+
+        renderHabits();
+    }
+
+    function renderHabits() {
+        const habitBody = document.getElementById('habitBody');
+        habitBody.innerHTML = '';
+
+        habits.forEach((habit, index) => {
+            const tr = document.createElement('tr');
+            
+            // Habit Name Cell
+            const tdName = document.createElement('td');
+            tdName.className = 'habit-cell';
+            tdName.innerHTML = `<input class="habit-input" value="${habit.name}" onchange="updateHabitName(${index}, this.value)">`;
+            tr.appendChild(tdName);
+
+            // Checkbox Cells
+            habit.data.forEach((checked, dayIndex) => {
+                const td = document.createElement('td');
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = checked;
+                cb.onchange = () => toggleHabit(index, dayIndex);
+                td.appendChild(cb);
+                tr.appendChild(td);
+            });
+
+            // Row Progress Cell
+            const tdRowPct = document.createElement('td');
+            tdRowPct.id = `row-pct-${index}`;
+            tdRowPct.style.fontWeight = 'bold';
+            tdRowPct.style.color = 'var(--sage-green)';
+            tr.appendChild(tdRowPct);
+
+            habitBody.appendChild(tr);
+        });
+        updateStats();
+    }
+
+    function addNewHabit() {
+        habits.push({ name: "New Habit ✨", data: new Array(daysInMonth).fill(false) });
+        renderHabits();
+        saveData(); // Save immediately
+    }
+
+    function updateHabitName(index, val) {
+        habits[index].name = val;
+        saveData(); // Save on rename
+    }
+
+    function toggleHabit(hIdx, dIdx) {
+        habits[hIdx].data[dIdx] = !habits[hIdx].data[dIdx];
+        updateStats();
+        saveData(); // Save on check/uncheck
+    }
+
+    // 3. HARD RESET (MANUAL DELETE)
+    function hardReset() {
+        if(confirm("Are you sure? This will delete all your progress and cannot be undone.")) {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload(); // Refresh the page to reload defaults
+        }
+    }
+
+    function updateStats() {
+        let totalChecks = 0;
+        let dailyData = new Array(daysInMonth).fill(0);
+
+        habits.forEach((habit, hIdx) => {
+            let habitChecks = 0;
+            habit.data.forEach((checked, dIdx) => {
+                if (checked) {
+                    habitChecks++;
+                    dailyData[dIdx]++;
+                    totalChecks++;
+                }
+            });
+            const pct = ((habitChecks / daysInMonth) * 100).toFixed(0);
+            const el = document.getElementById(`row-pct-${hIdx}`);
+            if(el) el.textContent = pct + '%';
+        });
+
+        // Update Stats Cards
+        const totalPossible = habits.length * daysInMonth;
+        const avg = totalPossible > 0 ? ((totalChecks / totalPossible) * 100).toFixed(1) : 0;
+        
+        document.getElementById('xpDisplay').textContent = totalChecks * 10;
+        document.getElementById('avgDisplay').textContent = avg + '%';
+        
+        // Level Logic
+        const level = Math.floor(totalChecks / 10) + 1;
+        document.getElementById('levelDisplay').textContent = `Lv. ${level}`;
+
+        // Rank Logic
+        let rank = "Novice";
+        if(avg > 80) rank = "Master 🏆";
+        else if(avg > 50) rank = "Warrior ⚔️";
+        else if(avg > 20) rank = "Apprentice 🛡️";
+        document.getElementById('rankDisplay').textContent = rank;
+
+        updateChart(dailyData.map(count => habits.length > 0 ? (count / habits.length) * 100 : 0));
+    }
+
+    function updateChart(dataPoints) {
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+
+        if (chart) {
+            chart.data.datasets[0].data = dataPoints;
+            chart.update();
+        } else {
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Completion %',
+                        data: dataPoints,
+                        borderColor: '#9fb8ad',
+                        backgroundColor: 'rgba(159, 184, 173, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    }
+
+    // Initialize
+    window.onload = loadData;
+</script>
+
+</body>
+</html>

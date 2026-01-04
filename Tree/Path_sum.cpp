@@ -1,0 +1,45 @@
+class Solution {
+public:
+bool solve(TreeNode* root, int targetSum,int sum)
+{
+    
+    if(root==NULL)
+    {
+        return false;
+    }
+    sum=sum+root->val;
+    if(root->left==NULL && root->right==NULL)
+    {
+        if(targetSum==sum)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool l=solve(root->left,targetSum,sum);
+    bool r=solve(root->right,targetSum,sum);
+
+    return l||r;
+}
+    bool hasPathSum(TreeNode* root, int targetSum) {
+         int sum=0;
+         bool ans=solve(root,targetSum,sum);
+         return ans;
+    }
+};
+Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.
+
+A leaf is a node with no children.
+
+ 
+
+Example 1:
+
+
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+Output: true
+Explanation: The root-to-leaf path with the target sum is shown.
