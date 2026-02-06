@@ -73,3 +73,28 @@ public:
 
 // Highest Frequency Element: 3
 // Lowest Frequency Element: 1
+
+// Usingunordered map simple and optimized method
+class Solution {
+  public:
+    // Function to find the difference between the maximum and minimum frequency of
+    // elements.
+    int findDiff(vector<int>& arr) {
+      unordered_map<int,int>mp;
+      for(int i=0;i<arr.size();i++)
+      {
+          mp[arr[i]]++;
+      }
+      int l=INT_MAX;
+      int h=INT_MIN;
+      for(auto x : mp)
+      {
+          l=min(l,x.second);
+      }
+      for(auto x : mp)
+      {
+          h=max(h,x.second);
+      }
+      return h-l;
+    }
+};
