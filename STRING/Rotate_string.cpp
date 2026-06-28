@@ -1,3 +1,19 @@
+//this is perfect solutipon very easy and always refer from this
+class Solution {
+public:
+    bool rotateString(string s, string goal) {
+        if(s.length()!=goal.length()) return false;
+        string final=s+s;
+        if(final.find(goal) != string::npos)
+        {
+            return true;
+        }
+        return false;
+    }
+};
+
+
+//Brute force
 class Solution {
 public:
     bool check(string goal, string rotate)

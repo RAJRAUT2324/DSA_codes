@@ -1,3 +1,35 @@
+/*
+class Node {
+public:
+    int data;
+    Node *next;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+First Node of Loop in Linked List
+
+*/
+
+class Solution {
+  public:
+    int cycleStart(Node* head) {
+      unordered_map<Node*,bool>mp;
+      if(head==NULL) return -1;
+      while(head!=NULL)
+      {
+          if(mp[head]==true)
+          {
+              return head->data;
+          }
+          mp[head]=true;
+          head=head->next;
+      }
+        return -1;
+    }
+};
 /**
  * Definition for singly-linked list.
  * struct ListNode {

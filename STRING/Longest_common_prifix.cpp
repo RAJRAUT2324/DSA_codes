@@ -40,3 +40,38 @@ public:
 // Input: strs = ["dog","racecar","car"]
 // Output: ""
 // Explanation: There is no common prefix among the input strings.
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if(strs.size()==1) return strs[0];
+        string ans="";
+        string f=strs[0];
+        for(int i=0;i<f.length();i++)
+        {
+            bool val=false;
+            for(int j=1;j<strs.size();j++)
+            {
+                string temp=strs[j];
+                if(f[i]==temp[i])
+                {
+                    val=true;
+                }
+                else
+                {
+                    val=false;
+                    break;
+                }
+            }
+            if(val)
+            {
+                ans.push_back(f[i]);
+            }
+            else
+            {
+                break;
+            }
+        }
+        return ans;
+    }
+};
+Longest Common Prefix

@@ -51,3 +51,57 @@ class Solution {
 // Output: 457
 
 // Explanation: 4->5->6 represents 456 and when 1 is added it becomes 457. 
+class Solution {
+public:
+
+    Node* reverse(Node* head)
+    {
+        Node* prev = NULL;
+        Node* curr = head;
+        Node* forward = NULL;
+
+        while(curr != NULL)
+        {
+            forward = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = forward;
+        }
+
+        return prev;
+    }
+
+    Node* addOne(Node* head) {
+
+        Node* reversed = reverse(head);
+        Node* temp = reversed;
+        Node* prev = NULL;
+        int carry = 1;
+
+        while(temp != NULL)
+        {
+            temp->data = temp->data + carry;
+
+            if(temp->data > 9)
+            {
+                carry = temp->data / 10;
+                temp->data = temp->data % 10;
+            }
+            else
+            {
+                carry = 0;
+            }
+
+            prev = temp;
+            temp = temp->next;
+        }
+
+        if(carry > 0)
+        {
+            Node* newnode = new Node(carry);
+            prev->next = newnode;
+        }
+
+        return reverse(reversed);
+    }
+};

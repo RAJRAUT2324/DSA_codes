@@ -1,0 +1,48 @@
+two folders backend and frontend,
+
+|| backend ||
+
+1 inside the backend folder create src folde app.js in it its use to create server
+                                             server.js in main backend its to start server
+2. now create db folder in the src and add db .js were write code to connect the db and export connect function in serevre.js call function to run db
+3.src->routs => rout.js file express router require router . we can create different routes
+4. controller means(req,res) this function we write in controller and the route create in the routes
+5. first path is user/register were we send the user data is mongo-db using bcrypt and jwt(we send user_id) ->not email here
+6.require controller in the routs.js then require routs in app.js app.use("/api",auth),so the befor using every route we need to
+add this route to add them
+7. login api for authentications and the token sending from it Register → token → user already logged in ✅ , Register → "Account created" → user must login
+8.install dotenv package and then write secrate code in it use as process.env.jwt_key like this ass dot env config in the server.js
+create env.example for dev to hide this folder when share on GitHub write just file name in git ignore.
+9.create the logout api were clear token to logout
+10.Similar as the above user we need to create the food partner model suthentication and then similae login logout routes
+
+|| Phase 2
+1.we need to create model of db to store food product details and then create new routes at '/api/food' post request .
+2.then we need to add middlewere of checking if cookie of logined foodpartner is there or not and then create the new controller to write logic.
+3.this middlewere is use to add the protection that only ffodpartner is able to add the food details and also the new req.body that foodp is true or not.
+4.use the multer to upload video file require them in the routes and write logic in the route befor controller
+5.use imagekit a cloud to store your videos free on cloud because multer store file in local but on server we need them on the cloud
+6.servises folder srivise.stoarge.js writing code of the clod storage provides from there doc imp all third party servies codes are written here ex.if we need llm from goggle or cloude we add there services here anything
+7.we are writing function in srvices that to upload the files in the cloud and in this function we are uploading the buufer of file comes from the multer with file name so file store on the cloud
+8.installing uuid package that helps to generate the uuid for unique file name just uuid generator 
+9. Now on the same  api we give tworequest one to post the data and another to get that data from the data base
+10. we are using the middlewer for the authentications etc
+
+
+
+//Frontend
+1. vite @latest this contents the react also { This is the new methos } ( We are developing it as an the mobile centric mode )
+2. we need to create the routes 
+  user/-> ragistere
+  user/->login
+
+  food-partner/->register
+  food-partner/->login
+3. we creates routes folder inside the src and then we add routes.jsx file in it also the we create route under routes tag under router tag
+4.We are then rendering appRoutes.jsx file inside the app file because every page is showing from the routes and also add the browser router inside the main file
+5. just want ui from the ai only ui without any logic.
+6. now to send the request on the pericular route we need to install axious package
+7.  const FirstName=e.target.Fullname.value; just like this by simple method create the single functipon with onclick meythod to submit form then add the axious,post method to sunbmit form in peticular route inside function simple method ( cores == > we canot request on anothoe website from one website so it can be handled by using the cors package in backend write app.use cores in app.js
+8.basicalyy add the frontend simply to complete my website
+9.completed project ...
+

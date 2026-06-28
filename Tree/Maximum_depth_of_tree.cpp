@@ -9,6 +9,62 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+ //Simple aproach
+ /* The Node structure is
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+};
+}; */
+
+class Solution {
+public:
+    int maxDepth(Node* root) {
+   queue<Node*>q;
+   if(root==NULL) return 0;
+   q.push(root);
+   q.push(NULL);
+   int count=0;
+   while(!q.empty())
+   {
+     auto temp=q.front();
+     q.pop();
+     if(temp==NULL && q.empty())
+     {
+        break;
+     }
+     else if(temp==NULL && !q.empty())
+     {
+        count=count+1;
+        q.push(NULL);
+     }
+     else
+     {
+        if(temp->left)
+        {
+             q.push(temp->left);
+        }
+       if(temp->right)
+       {
+         q.push(temp->right);
+       }
+       
+     }
+   }
+   return count+1;
+    }
+};
+
+
+
+
+///@ optimized 
+
+
 class Solution {
 public:
     int maxDepth(TreeNode* root) {

@@ -1,0 +1,96 @@
+1. The "Accumulator" Pattern (Tail Recursion)In this pattern, you pass the "result so far" as an argument to the next call. It is highly efficient and prevents "work" from being done on the way back up.Logic: function(remaining_data, result_so_far)Key Question: How do I pass the current state to the next call?Practice Questions:Reverse a string using an accumulator.Check if a string is a Palindrome.Calculate $x^n$ (Power function) in $O(\log n)$
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// The function takes the current string and the 'box' (accumulator)
+string reverseWithAccumulator(string s, string acc) {
+    // BASE CASE: If the string is empty, we are done!
+    // Return the 'box' we've been carrying.
+    if (s.length() == 0) {
+        return acc;
+    }
+
+    // RECURSIVE STEP:
+    // 1. Take the first character: s[0]
+    // 2. Put it at the BEGINNING of our accumulator box: s[0] + acc
+    // 3. Send the rest of the string to the next function: s.substr(1)
+    return reverseWithAccumulator(s.substr(1), s[0] + acc);
+}
+
+int main() {
+    string word = "HELLO";
+    // We start with an empty 'box' (accumulator)
+    string result = reverseWithAccumulator(word, "");
+    
+    cout << "Original: " << word << endl;
+    cout << "Reversed: " << result << endl;
+    
+    return 0;
+}
+
+1. Reverse String (LeetCode #344)While often solved iteratively, this is the perfect starter for the accumulator pattern. You pass the two pointers (left and right) as the state.The Accumulator Logic: Instead of building a new string on the way back from recursion, swap the elements at left and right and pass the incremented/decremented indices to the next call.Recursive Step: reverse(s, left + 1, right - 1)
+
+2. Palindrome Linked List (LeetCode #234)This is a sophisticated version of the palindrome check.The Accumulator Logic: You need to compare the start of the list with the end. You can use recursion to reach the end of the list, and as the recursion "unwinds," compare it with a "left" pointer that you keep moving forward.Key Insight: The "state" being passed back is the comparison result, while the "state" being passed forward is the current node.
+
+3. Pow(x, n) (LeetCode #50)This teaches you how to pass a calculated value into a "Divide and Conquer" style tail recursion.The Accumulator Logic: To solve $x^n$ in $O(\log n)$, you check if $n$ is even or odd. If even, you pass $x \times x$ and $n/2$ to the next call.Recursive Step: myPow(x * x, n / 2) (if $n$ is even)
+
+4. Sum of All Subset XOR Totals (LeetCode #1863)A great bridge between basic accumulators and "Include/Exclude" logic.The Accumulator Logic: As you traverse the array, you pass the current_xor value to the next recursive call.Recursive Step: You make two calls: one where you XOR the current element into your accumulator, and one where you don't.Pattern: solve(index + 1, current_xor_accumulator)
+
+5. Binary Tree Paths (LeetCode #257)This applies the accumulator pattern to a non-linear data structure.The Accumulator Logic: You pass the "string path built so far" (e.g., "1->2->") down to the child nodes.Base Case: When you hit a leaf node, you add the current accumulator (the full path) to your final list.Recursive Step: dfs(node.left, current_path + str(node.val) + "->")
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+.2. Multiple Recursion (Tree Pattern)This is used when one sub-problem isn't enough; you need to solve two or more to get the answer. This is the foundation for most "Tree" and "Dynamic Programming" problems.Logic: return solve(n-1) + solve(n-2)Key Question: How many branches does each decision create?Practice Questions:N-th Fibonacci: The classic tree recursion.Climbing Stairs: In how many ways can you reach the $n$-th step?Tower of Hanoi: A pure logical tree recursion.
+
+🌿 Example 1: Fibonacci (Classic Tree Recursion)
+
+The Fibonacci sequence is the perfect example of multiple recursion:
+
+F(n)=F(n−1)+F(n−2)
+
+🔁 How it expands:
+F(5)
+├── F(4)
+│   ├── F(3)
+│   └── F(2)
+└── F(3)
+    ├── F(2)
+    └── F(1)
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3. The "Include/Exclude" Pattern (Subsets)This is the most common pattern for "Pick or Don't Pick" problems. It is the gateway to backtracking.Logic: For every element, you have two choices: include it in your current set or leave it out.Key Question: What happens to my "path" if I take this element vs. if I don't?Practice Questions:Power Set / Subsets: Generate all possible subsets of an array.Subsequences of a String: Find all subsequences (e.g., "abc" -> "a", "b", "ab"...).Target Sum: Can you reach a sum $K$ using a subset of numbers?
+
+The House Robber problem is the perfect "Include/Exclude" puzzle because it adds a Constraint Rule: you cannot rob two adjacent houses. This means your "Include" decision forces your next "Exclude" decision.The Decision LogicFor each house $i$:Include (Rob House $i$): You get the money from house $i$, but you must skip house $i+1$. Your next decision happens at $i+2$.Exclude (Skip House $i$): You get 0 money from this house, and you move to house $i+1$ to decide there.Tree ExplanationExample: money = [2, 7, 9, 3, 1]PlaintextStart: House 0 (Value: 2)
+              /                                \
+      INCLUDE (Rob 0)                    EXCLUDE (Skip 0)
+      Gain: 2, Move to: 2                Gain: 0, Move to: 1
+           /       \                         /       \
+    INC (Rob 2)  EXC (Skip 2)         INC (Rob 1)  EXC (Skip 1)
+    Gain: 9      Gain: 0              Gain: 7      Gain: 0
+    Move to: 4   Move to: 3           Move to: 3   Move to: 2
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4. Divide and ConquerThis pattern splits the data into two equal (or near-equal) halves, solves them independently, and then merges the results.Logic: left = solve(left_half); right = solve(right_half); return merge(left, right)Key Question: How do I combine two solved halves into one final answer?Practice Questions:Merge Sort: The gold standard for this pattern.Binary Search: Divide and conquer where you only follow one half.Quick Sort: Partitioning logic with recursion
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+.5. Backtracking (Exploration Pattern)Backtracking is recursion with a "Undo" step. It’s used when you are exploring a path and need to "reset" the state before trying a different path.Logic: Choose -> Recurse -> Un-choose (Backtrack)Key Question: How do I reset my data structure so the next branch starts fresh?Practice Questions:Permutations: Find all ways to arrange a string/array.N-Queens Problem: Placing queens on a chessboard without them attacking each other.Sudoku Solver: Fill the board by trying numbers and backtracking on failure.Rat in a Maze: Find a path from start to end in a grid.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+6. Grid / Matrix Recursion (Flood Fill)This is recursion applied to 2D space. You usually move in 4 directions (Up, Down, Left, Right).Logic: dfs(row+1, col); dfs(row-1, col); dfs(row, col+1); dfs(row, col-1);Key Question: How do I mark a cell as "visited" so I don't get stuck in an infinite loop?Practice Questions:Flood Fill: Change colors of connected pixels.Number of Islands: Count connected groups of '1's in a grid.Word Search: Can a word be constructed from letters in adjacent cells?
+
+7. Recursion on Trees & GraphsSince Trees are recursive data structures (a Tree is a Node with smaller Trees attached), recursion is the natural way to traverse them.Logic: solve(root.left); solve(root.right);Practice Questions:Inorder/Preorder/Postorder Traversal.Maximum Depth of a Binary Tree.Path Sum: Is there a path from root to leaf that equals $K$?Lowest Common Ancestor (LCA).
+
+
+

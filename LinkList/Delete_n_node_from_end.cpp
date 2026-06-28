@@ -62,3 +62,22 @@ public:
  
 
 // Constraints:
+class Solution {
+public:
+    int getKthFromLast(Node* head, int k) {
+        if (!head) return -1;
+        int count = 0;
+        Node* temp = head;
+        while (temp != NULL) {
+            count++;
+            temp = temp->next;
+        }
+        if (k > count) return -1;
+
+        temp = head;
+        for (int i = 0; i < count - k; i++) {
+            temp = temp->next;
+        }
+        return temp->data;
+    }
+};

@@ -39,3 +39,46 @@ class Solution {
     
 // Output: 1 -> 2 -> 10
 // Explanation: We can see that 1 is inserted at the beginning of the linked list.
+
+//Insert element at Tail
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+
+    // Default constructor
+    Node() {
+        data = 0;
+        next = NULL;
+    }
+
+    // Parameterised Constructor
+    Node(int data) {
+        this->data = data;
+        this->next = NULL;
+    }
+};
+*/
+class Solution {
+  public:
+    Node *insertAtEnd(Node *head, int x) {
+        if(head==NULL)
+        {
+            Node* newNode=new Node(x);
+            head=newNode;
+        }
+        else
+        {
+            Node* tail=head;
+            while(tail->next!=NULL)
+            {
+                tail=tail->next;
+            }
+            Node* newNode=new Node(x);
+            tail->next=newNode;
+            
+        }
+        return head;
+    }
+};

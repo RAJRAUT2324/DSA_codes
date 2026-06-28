@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build cpp",
+      "type": "shell",
+      "command": "C:\\MinGW\\bin\\g++.exe",
+      "args": [
+        "-Wall",
+        "-Wextra",
+        "-g3",
+        "-finput-charset=UTF-8",
+        "-fexec-charset=UTF-8",
+        "${file}",
+        "-o",
+        "${workspaceFolder}\\output\\${fileBasenameNoExtension}.exe"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    }
+  ]
+}
